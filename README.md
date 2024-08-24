@@ -1,4 +1,4 @@
-# [Hysteria2](https://github.com/apernet/hysteria)
+# Hysteria2
 hysteria2一键安装
 宝宝们如果觉得好用，记得点个小星星⭐️哦
 
@@ -15,18 +15,19 @@ hysteria2一键安装
 
 ☆支持安装xanmod内核使用bbrv3加速（脚本来自[ylx2016](https://github.com/ylx2016/Linux-NetSpeed)）
 
-更多客户端配置请查看[客户端配置](https://v2.hysteria.network/zh/docs/getting-started/Client/)
+更多客户端配置请查看[客户端配置](https://v2.hysteria.network/zh/docs/getting-started/Client/)  [cloudflare令牌](https://dash.cloudflare.com/profile/api-tokens)
 
 
-**🙃安装脚本(首先推荐ubuntu的系统):**
+**🙃安装脚本(首先推荐debian的系统):**
 ```
 curl -sSL https://github.com/opamoy/Hysteria2/raw/main/install.sh -o install.sh && chmod +x install.sh && bash install.sh
 ```
 
-**🙃备用脚本(首先推荐ubuntu的系统):**
+**🙃备用脚本(首先推荐debian的系统):**
 ```
 wget file.willloving.xyz -O install.sh && chmod +x install.sh && bash install.sh
 ```
+**新增快捷方式终端输入hy2一键执行脚本**
 
 **我的联系方式:[电报](https://t.me/seagullz44)**
 

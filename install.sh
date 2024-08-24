@@ -62,7 +62,7 @@ install_custom_packages() {
         apt install -y wget sed sudo openssl net-tools psmisc procps iptables iproute2 ca-certificates jq
     elif [ "$OS_TYPE" = "centos" ] || [ "$OS_TYPE" = "rhel" ] || [ "$OS_TYPE" = "rocky" ]; then
         yum install -y epel-release
-        yum install -y wget sed openssl net-tools psmisc procps-ng iptables iproute ca-certificates jq
+        yum install -y wget sed sudo openssl net-tools psmisc procps-ng iptables iproute ca-certificates jq
     else
         echo "不支持的操作系统。"
         exit 1
@@ -415,17 +415,31 @@ if [ -f "/root/hy3/config.yaml" ]; then
 else
   echo "Hysteria 服务器配置文件不存在。"
 fi
+
 rm -r /root/hy3
 systemctl stop ipppp.service
 systemctl disable ipppp.service
 rm /etc/systemd/system/ipppp.service
+rm -r /usr/local/bin/hy2
 echo "卸载完成(ง ื▿ ื)ว."
  }
 
+hy2easy() {
+if [ -f /usr/local/bin/hy2 ]; then
+    echo "嘻嘻嘻嘻"
+else
+    echo 'wget file.willloving.xyz -O install.sh && chmod +x install.sh && bash install.sh' > hy2.sh
+    cp -f ./hy2.sh /usr/local/bin/hy2 > /dev/null 2>&1
+    chmod +x /usr/local/bin/hy2
+    echo "已添加hy2快捷方式"
+fi
+}
+hy2easy
 welcome
 
 #这些就行提示你输入的😇
 echo "$(random_color '选择一个操作，小崽子(ง ื▿ ื)ว：')"
+echo -e "$(random_color '输入hy2快捷启动脚本')"
 echo "1. 安装(以梦为马)"
 echo "2. 卸载(以心为疆)"
 echo "$(random_color '>>>>>>>>>>>>>>>>>>>>')"
@@ -782,9 +796,14 @@ fi
 
 echo "请选择一个选项:"
 echo "1. 是否开启dns申请证书方式(默认cloudflare申请方式,需要api令牌,邮箱必须为注册邮箱)"
-echo "2. 跳过(自签用户不用管这个)"
+echo "2. 跳过(自签用户和不知道这个的回车默认直接跳过就行)"
 
 read -p "请输入你的选择 (1或2): " choice
+
+# 如果用户直接按回车，默认选择2
+if [ -z "$choice" ]; then
+    choice=2
+fi
 
 if [ "$choice" -eq 1 ]; then
     read -p "请输入Cloudflare的API令牌: " api_key
@@ -808,7 +827,6 @@ dns:\\
 else
     echo "跳过DNS配置步骤。"
 fi
-
 
 echo "$(random_color '请输入你的密码（留空将生成随机密码，不超过20个字符）: ')"
 read -p "" password
