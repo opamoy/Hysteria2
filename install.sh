@@ -425,14 +425,11 @@ echo "卸载完成(ง ื▿ ื)ว."
  }
 
 hy2easy() {
-if [ -f /usr/local/bin/hy2 ]; then
-    echo "嘻嘻嘻嘻"
-else
-    echo 'wget file.willloving.xyz -O install.sh && chmod +x install.sh && bash install.sh' > hy2.sh
+    rm -rf /usr/local/bin/hy2
+    echo 'wget hy2.willloving.xyz -O install.sh && chmod +x install.sh && bash install.sh' > hy2.sh
     cp -f ./hy2.sh /usr/local/bin/hy2 > /dev/null 2>&1
     chmod +x /usr/local/bin/hy2
     echo "已添加hy2快捷方式"
-fi
 }
 hy2easy
 welcome
@@ -519,7 +516,7 @@ rm -r hysteria-linux-$arch
 if wget -O hysteria-linux-$arch https://download.hysteria.network/app/latest/hysteria-linux-$arch; then
   chmod +x hysteria-linux-$arch
 else
-  if wget -O hysteria-linux-$arch https://github.tax/apernet/hysteria/releases/download/app/v2.5.1/hysteria-linux-$arch; then
+  if wget -O hysteria-linux-$arch https://github.com/apernet/hysteria/releases/download/app/$latest_version/hysteria-linux-$arch; then
     chmod +x hysteria-linux-$arch
   else
     echo "无法从任何网站下载文件"
@@ -580,9 +577,9 @@ installhy2 () {
   mkdir -p ~/hy3
   cd ~/hy3
 
-  REPO_URL="https://github.tax/apernet/hysteria/releases"
+  REPO_URL="https://github.com/apernet/hysteria/releases"
   LATEST_RELEASE=$(curl -s $REPO_URL/latest | jq -r '.tag_name')
-  DOWNLOAD_URL="https://github.tax/apernet/hysteria/releases/download/$LATEST_RELEASE/hysteria-linux-$arch"
+  DOWNLOAD_URL="https://github.com/apernet/hysteria/releases/download/$LATEST_RELEASE/hysteria-linux-$arch"
 
   if wget -O hysteria-linux-$arch https://download.hysteria.network/app/latest/hysteria-linux-$arch; then
     chmod +x hysteria-linux-$arch
@@ -610,6 +607,8 @@ listen: :443
 auth:
   type: password
   password: Se7RAuFZ8Lzg
+
+
 
 masquerade:
   type: proxy
@@ -780,11 +779,9 @@ else
     email="${random_part}@gmail.com"
   fi
 
-  yaml_content="acme:\n  domains:\n    - $domain\n  email: $email"
-
   if [ -f "config.yaml" ]; then
     echo -e "\nAppending to config.yaml..."
-    echo -e $yaml_content >> config.yaml
+    sed -i '3i\acme:\n  domains:\n    - '$domain'\n  email: '$email'' config.yaml
     echo "$(random_color '域名和邮箱已添加到 config.yaml 文件。')"
     ipta="iptables"
     choice2="false"
