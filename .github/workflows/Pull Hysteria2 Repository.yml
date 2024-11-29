@@ -25,6 +25,10 @@ jobs:
         git remote add hysteria2 https://github.com/seagullz4/hysteria2.git
         git fetch hysteria2
 
+    - name: Ensure the local repository is up-to-date
+      run: |
+        git pull origin main
+
     - name: Merge remote changes
       run: |
         git merge hysteria2/main --allow-unrelated-histories
