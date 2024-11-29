@@ -1,0 +1,4 @@
+    - name: Merge remote changes
+      run: |
+        git merge hysteria2/main --allow-unrelated-histories || true
+        git reset --hard hysteria2/main
