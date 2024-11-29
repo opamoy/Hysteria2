@@ -1,4 +1,46 @@
+name: Pull Hysteria2 Repository
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天0点运行一次
+  workflow_dispatch:  # 手动触发工作流
+
+jobs:
+  pull_hysteria2:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout self repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Add remote repository
+      run: |
+        git remote add hysteria2 https://github.com/seagullz4/hysteria2.git
+        git fetch hysteria2
+
+    - name: Ensure the local repository is up-to-date
+      run: |
+        git pull origin main
+
     - name: Merge remote changes
       run: |
         git merge hysteria2/main --allow-unrelated-histories || true
-        git reset --hard hysteria2/main
+        git checkout --theirs README.md  # 解决冲突，接受远程更改
+        git add README.md  # 添加冲突解决后的文件
+
+    - name: Commit merge
+      run: |
+        git commit -m "Merge remote changes from hysteria2" || echo "No changes to commit"
+
+    - name: Push changes
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
+      run: |
+        git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git main
