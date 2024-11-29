@@ -1,4 +1,4 @@
-name: Pull Hysteria2 Repository
+name: Repository
 
 on:
   schedule:
