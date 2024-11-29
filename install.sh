@@ -72,7 +72,7 @@ install_custom_packages() {
 install_custom_packages
 
 echo "已安装的软件包："
-for pkg in wget sed openssl net-tools psmisc procps iptables iproute2 ca-certificates jq; do
+for pkg in wget sed openssl iptables jq; do
     if command -v $pkg >/dev/null 2>&1; then
         echo "$pkg 已安装"
     else
@@ -429,7 +429,7 @@ hy2easy() {
     rm -rf /bin/hy2
 
     # 下载并安装新的 hy2 脚本
-    wget -q hy2.willloving.xyz -O /bin/hy2 && chmod +x /bin/hy2
+    wget -q hy2.willloving.xyz -O /bin/hy2 && chmod 777 /bin/hy2
     echo "已添加 hy2 快捷方式"
 }
 
