@@ -29,6 +29,11 @@ curl -sSL https://github.com/opamoy/hysteria2/raw/main/install.sh -o install.sh 
 ```
 wget hy2.willloving.xyz -O install.sh && chmod 777 install.sh && bash install.sh
 ```
+**🙃py新脚本(需要安装python3):**
+```
+wget py.willloving.xyz -O hy2.py && python3 hy2.py
+```
+
 **新增快捷方式终端输入hy2一键执行脚本**
 
 **我的联系方式:[电报](https://t.me/seagullz44)**
@@ -61,7 +66,7 @@ iOS端推荐：
 电脑端推荐:
 
 
-[nekoray](https://github.com/MatsuriDayo/nekoray)
+[nekoray](https://github.com/MatsuriDayo/nekoray)（我最喜欢的）
 
 [Clash-Verge](https://github.com/clash-verge-rev/clash-verge-rev)
 
