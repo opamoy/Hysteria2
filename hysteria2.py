@@ -10,7 +10,7 @@ from urllib import parse
 from pathlib import Path
 
 def agree_treaty():       #此函数作用为：用户是否同意此条款
-    file_agree = Path(r"/root/hy2config/agree.txt")  # 提取文件名
+    file_agree = Path(r"/etc/hy2config/agree.txt")  # 提取文件名
     if file_agree.exists():       #.exists()判断文件是否存在，存在则为true跳过此步骤
         print("你已经同意过谢谢")
     else:
@@ -18,7 +18,7 @@ def agree_treaty():       #此函数作用为：用户是否同意此条款
             choose_1 = input("是否同意并阅读安装hysteria2相关条款? (y/n) ：")
             if choose_1 == "y":
                 print("我同意使用本程序必循遵守部署服务器所在地、所在国家和用户所在国家的法律法规, 程序作者不对使用者任何不当行为负责")
-                check_file = subprocess.run("mkdir /root/hy2config && touch /root/hy2config/agree.txt && touch /root/hy2config/hy2_url_scheme.txt",shell = True)
+                check_file = subprocess.run("mkdir /etc/hy2config && touch /etc/hy2config/agree.txt && touch /etc/hy2config/hy2_url_scheme.txt",shell = True)
                 print(check_file)    #当用户同意安装时创建该文件，下次自动检查时跳过此步骤
                 break
             elif choose_1 == "n":
@@ -30,10 +30,10 @@ def agree_treaty():       #此函数作用为：用户是否同意此条款
 def check_linux_system():    #检查Linux系统为哪个进行对应的安装
     sys_version = Path(r"/etc/os-release")    #获取Linux系统版本
     if "ubuntu" in sys_version.read_text().lower() or "debian" in sys_version.read_text().lower():
-        check_file = subprocess.run("apt update && apt install -y wget sudo openssl qrencode net-tools procps iptables ca-certificates",shell = True)   #安装依赖
+        check_file = subprocess.run("apt update && apt install -y sudo openssl qrencode net-tools procps iptables ca-certificates curl",shell = True)   #安装依赖
         print(check_file)
     elif "rocky" in sys_version.read_text().lower() or "centos" in sys_version.read_text().lower() or "fedora" in sys_version.read_text().lower():
-        check_file = subprocess.run("dnf install -y epel-release wget sudo openssl qrencode net-tools procps iptables ca-certificates",shell=True)
+        check_file = subprocess.run("dnf install -y epel-release sudo openssl qrencode net-tools procps iptables-services ca-certificates curl",shell=True)
         print(check_file)
     else:
         print("\033[91m暂时不支持该系统，推荐使用Debian 11/Ubuntu 22.04 LTS/Rocky Linux 8/CentOS Stream 8/Fedora 37 更高以上的系统\033[m")
@@ -73,7 +73,7 @@ def hysteria2_uninstall():   #卸载hysteria2
         if choice_1 == "y":
             hy2_uninstall_1 = subprocess.run("bash <(curl -fsSL https://get.hy2.sh/) --remove",shell = True,executable="/bin/bash")   #调用hy2官方脚本进行卸载
             print(hy2_uninstall_1)
-            hy2_uninstall_1_2 = subprocess.run("rm -rf /etc/hysteria && userdel -r hysteria && rm -f /etc/systemd/system/multi-user.target.wants/hysteria-server.service && rm -f /etc/systemd/system/multi-user.target.wants/hysteria-server@*.service && systemctl daemon-reload && rm -rf /etc/ssl/private/ && rm -rf /root/hy2config",shell=True)  # 删除禁用systemd服务
+            hy2_uninstall_1_2 = subprocess.run("rm -rf /etc/hysteria && rm -rf /etc/systemd/system/multi-user.target.wants/hysteria-server.service && rm -rf /etc/systemd/system/multi-user.target.wants/hysteria-server@*.service && systemctl daemon-reload && rm -rf /etc/ssl/private/ && rm -rf /etc/hy2config",shell=True)  # 删除禁用systemd服务
             print(hy2_uninstall_1_2)
             print("卸载hysteria2完成")
             sys.exit()
@@ -107,7 +107,7 @@ domain_name = "超级帅"
 def hysteria2_config():     #hysteria2配置
     global hy2_ip,domain_name
     hy2_config = Path(r"/etc/hysteria/config.yaml")  # 配置文件路径
-    hy2_url_scheme = Path(r"/root/hy2config/hy2_url_scheme.txt")  # 配置文件路径
+    hy2_url_scheme = Path(r"/etc/hy2config/hy2_url_scheme.txt")  # 配置文件路径
     while True:
         choice_1 = input("1. hy2配置查看\n2. hy2配置一键修改\n3. 手动修改hy2配置\n4. 返回\n请输入选项：")
         if choice_1 == "1":
@@ -152,11 +152,39 @@ def hysteria2_config():     #hysteria2配置
                     if hy2_obfs == "y":
                         obfs_passwd = input("请输入您的混淆密码：\n")
                         obfs_mode = f"obfs:\n  type: salamander\n  \n  salamander:\n    password: {obfs_passwd}"
-                        obfs_scheme = f"&obfs=salamander&obfs-password={obfs_passwd}&"
+                        obfs_scheme = f"&obfs=salamander&obfs-password={obfs_passwd}"
                         break
                     elif hy2_obfs == "n":
                         obfs_mode = ""
                         obfs_scheme = ""
+                        break
+                    else:
+                        print("\033[91m输入错误请重新输入\033[m")
+                while True:
+                    jump_port_choice = input("是否开启端口跳跃(y/n)：")
+                    if jump_port_choice == "y":
+                        try:
+                            first_port = int(input("请输入起始端口号："))
+                            last_port = int(input("请输入结束端口号："))
+                            if first_port <= 0 or first_port >= 65536:
+                                print("起始端口号范围为1~65535，请重新输入")
+                            elif last_port <= 0 or last_port >= 65536:
+                                print("结束端口号范围为1~65535，请重新输入")
+                            elif first_port > last_port:
+                                print("起始端口号不能大于结束端口号，请重新输入")
+                            else:
+                                os.system(f"iptables -t nat -A PREROUTING -i eth0 -p udp --dport {first_port}:{last_port} -j REDIRECT --to-ports {hy2_port}")
+                                os.system("touch /etc/hy2config/jump_port_back.sh")
+                                jump_port_back = Path(r"/etc/hy2config/jump_port_back.sh")
+                                jump_port_back.write_text(f"#!/bin/sh\niptables -t nat -D PREROUTING -i eth0 -p udp --dport {first_port}:{last_port} -j REDIRECT --to-ports {hy2_port} && ip6tables -t nat -D PREROUTING -i eth0 -p udp --dport {first_port}:{last_port} -j REDIRECT --to-ports {hy2_port}")
+                                jump_ports_neko = f"mport={hy2_port},{first_port}-{last_port}&"
+                                jump_ports_v2ray = f"&mport={first_port}-{last_port}"
+                                break
+                        except ValueError:  # 收集错误，判断用户是否输入为数字，上面int已经转换为数字，输入小数点或者其他字符串都会引发这个报错
+                            print("端口号只能为数字且不能包含小数点，请重新输入")
+                    elif jump_port_choice == "n":
+                        jump_ports_neko = ""
+                        jump_ports_v2ray = ""
                         break
                     else:
                         print("\033[91m输入错误请重新输入\033[m")
@@ -207,40 +235,27 @@ def hysteria2_config():     #hysteria2配置
                                 break
                             else:
                                 print("输入错误，请重新输入")
-                        hy2_config.write_text(f"""
-listen: :{hy2_port} 
-
-acme:
-  domains:
-    - {hy2_domain} 
-  email: {hy2_email} 
-{acme_dns} 
-
-auth:
-  type: password
-  password: {hy2_passwd} 
-
-masquerade: 
-  type: proxy
-  proxy:
-    url: {hy2_url} 
-    rewriteHost: true
-    
-ignoreClientBandwidth: {brutal_mode}
-
-{obfs_mode}
-""")
+                        # 一长串的配置文件
+                        hy2_share_neko = f"hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}/?{jump_ports_neko}sni={hy2_domain}{obfs_scheme}#{hy2_username}"
+                        hy2_share_v2ray = f"hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?security=tls{obfs_scheme}&insecure=1{jump_ports_v2ray}&sni={hy2_domain}#{hy2_username}"
+                        hy2_config.write_text(f"listen: :{hy2_port} \n\nacme:\n  domains:\n    - {hy2_domain} \n  email: {hy2_email} \n{acme_dns} \n\nauth:\n  type: password\n  password: {hy2_passwd} \n\nmasquerade: \n  type: proxy\n  proxy:\n    url: {hy2_url} \n    rewriteHost: true\n\nignoreClientBandwidth: {brutal_mode}\n\n{obfs_mode}\n")
                         os.system("clear")
-                        print("您的二维码为：\n")
+                        print("您的 nekoray|nekobox 二维码为：\n")
                         time.sleep(1)
-                        os.system(f'echo "hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?{obfs_scheme}sni={hy2_domain}#{hy2_username}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
+                        os.system(f'echo "{hy2_share_neko}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
                         time.sleep(1)
-                        print(f"\033[91m您的hy2配置为：\nhysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?{obfs_scheme}sni={hy2_domain}#{hy2_username}\033[m")
-                        os.system(f'echo "hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?{obfs_scheme}sni={hy2_domain}#{hy2_username}" | qrencode -o /root/hy2config/hy2.png')
+                        print(f"\033[91m您的 nekoray|nekobox hy2配置链接为：\n{hy2_share_neko}\033[m")
+                        os.system(f'echo "{hy2_share_neko}" | qrencode -o /etc/hy2config/hy2-neko.png')
                         time.sleep(1)
-                        print("二维码已保存到当前/root/hy2config目录")
-                        hy2_url_scheme.write_text(f"您的hy2配置为：\nhysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?{obfs_scheme}sni={hy2_domain}#{hy2_username}")
-                        print("hy2配置已写入/root/hy2config目录")
+                        print("二维码已保存到当前/etc/hy2config目录")
+                        print("您的 v2ray 二维码为：\n")
+                        time.sleep(3)
+                        os.system(f'echo "{hy2_share_v2ray}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
+                        time.sleep(1)
+                        print(f"\033[91m您的 v2ray hy2配置链接为：\n{hy2_share_v2ray}\033[m")
+                        os.system(f'echo "{hy2_share_v2ray}" | qrencode -o /etc/hy2config/hy2-v2ray.png')
+                        hy2_url_scheme.write_text(f"您的 nekoray|nekobox hy2配置链接为：{hy2_share_neko}\n您的 v2ray hy2配置链接为：{hy2_share_v2ray}")
+                        print("hy2配置已写入/etc/hy2config目录")
                         os.system("systemctl enable --now hysteria-server.service")
                         os.system("systemctl restart hysteria-server.service")
                         print("hy2服务已启动")
@@ -324,8 +339,7 @@ ignoreClientBandwidth: {brutal_mode}
                                 subprocess.run(cmd, check=True)
 
                                 # 设置文件权限
-                                os.chmod(f"{target_dir}/{domain_name}.key", 0o666)
-                                os.chmod(f"{target_dir}/{domain_name}.crt", 0o666)
+                                os.system(f"chmod 666 {target_dir}/{domain_name}.key && chmod 666 {target_dir}/{domain_name}.crt && chmod 777 /etc/ssl/private/")
 
                                 print("自签名证书和私钥已生成！")
                                 print(f"证书文件已保存到 {target_dir}/{domain_name}.crt")
@@ -345,38 +359,29 @@ ignoreClientBandwidth: {brutal_mode}
                                 break
                             else:
                                 print("\033[91m输入错误，请重新输入！\033[m")
-                        hy2_config.write_text(f"""
-listen: :{hy2_port} 
-
-tls:
-  cert: /etc/ssl/private/{domain_name}.crt
-  key: /etc/ssl/private/{domain_name}.key 
-
-auth:
-  type: password
-  password: {hy2_passwd} 
-
-masquerade: 
-  type: proxy
-  proxy:
-    url: {hy2_url} 
-    rewriteHost: true
-    
-ignoreClientBandwidth: {brutal_mode}
-
-{obfs_mode}
-""")
+                        hy2_share_neko = f"hysteria2://{hy2_passwd}@{hy2_ip}:{hy2_port}/?{jump_ports_neko}insecure=1&sni={domain_name}{obfs_scheme}#{hy2_username}"
+                        hy2_share_v2ray = f"hysteria2://{hy2_passwd}@{hy2_ip}:{hy2_port}?security=tls{obfs_scheme}&insecure=1{jump_ports_v2ray}&sni={domain_name}#{hy2_username}"
+                        hy2_config.write_text(f"listen: :{hy2_port} \n\ntls: \n  cert: /etc/ssl/private/{domain_name}.crt \n  key: /etc/ssl/private/{domain_name}.key \n\nauth: \n  type: password \n  password: {hy2_passwd} \n\nmasquerade: \n  type: proxy \n  proxy: \n    url: {hy2_url} \n    rewriteHost: true \n\nignoreClientBandwidth: {brutal_mode} \n\n{obfs_mode}")
                         os.system("clear")
-                        print("您的二维码为：")
+                        print("您的nekoray|nekobox二维码为：")
                         time.sleep(1)
-                        os.system(f'echo "hysteria2://{hy2_passwd}@{hy2_ip}:{hy2_port}?insecure=1&sni={domain_name}{obfs_scheme}#{hy2_username}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
+                        # 显示二维码
+                        os.system(f'echo "{hy2_share_neko}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
                         time.sleep(1)
-                        print(f"\033[91m您的hy2配置为：\nhysteria2://{hy2_passwd}@{hy2_ip}:{hy2_port}?insecure=1&sni={hy2_ip}{obfs_scheme}#{hy2_username}\033[m")
-                        os.system(f'echo "hysteria2://{hy2_passwd}@{hy2_ip}:{hy2_port}?insecure=1&sni={domain_name}{obfs_scheme}#{hy2_username}" | qrencode -o /root/hy2config/hy2.png')
+                        print(f"\033[91m您的 nekoray|nekobox hy2配置链接为：\n{hy2_share_neko}\033[m")
                         time.sleep(1)
-                        print("二维码已保存到/root/hy2config目录")
-                        hy2_url_scheme.write_text(f"您的hy2配置为：\nhysteria2://{hy2_passwd}@{hy2_ip}:{hy2_port}?insecure=1&sni={domain_name}{obfs_scheme}#{hy2_username}")
-                        print("配置已写入/root/hy2config目录")
+                        os.system(f'echo "{hy2_share_neko}" | qrencode -o /etc/hy2config/hy2-neko.png')
+                        print("二维码已保存到/etc/hy2config目录")
+                        print("您的v2ray二维码为：")
+                        time.sleep(3)
+                        os.system(f'echo "{hy2_share_v2ray}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
+                        time.sleep(1)
+                        print(f"\033[91m您的 v2ray hy2配置链接为：\n{hy2_share_v2ray}\033[m")
+                        time.sleep(1)
+                        os.system(f'echo "{hy2_share_v2ray}" | qrencode -o /etc/hy2config/hy2-v2ray.png')
+                        print("二维码已保存到/etc/hy2config目录")
+                        hy2_url_scheme.write_text(f"您的 nekoray|nekobox hy2配置链接为：{hy2_share_neko}\n您的 v2ray hy2配置链接为：{hy2_share_v2ray}")
+                        print("配置已写入/etc/hy2config目录")
                         os.system("systemctl enable --now hysteria-server.service")
                         os.system("systemctl restart hysteria-server.service")
                         print("hy2服务已启动")
@@ -385,38 +390,27 @@ ignoreClientBandwidth: {brutal_mode}
                         hy2_cert = input("请输入您的证书路径：\n")
                         hy2_key = input("请输入您的密钥路径：\n")
                         hy2_domain = input("请输入您自己的域名：\n")
-                        hy2_config.write_text(f"""
-listen: :{hy2_port} 
-
-tls:
-  cert: {hy2_cert} 
-  key: {hy2_key} 
-
-auth:
-  type: password
-  password: {hy2_passwd} 
-
-masquerade: 
-  type: proxy
-  proxy:
-    url: {hy2_url} 
-    rewriteHost: true
-
-ignoreClientBandwidth: {brutal_mode}
-
-{obfs_mode}
-""")
+                        hy2_config.write_text(f"listen: :{hy2_port}\n\ntls:\n  cert: {hy2_cert}\n  key: {hy2_key}\n\nauth:\n  type: password\n  password: {hy2_passwd}\n\nmasquerade: \n  type: proxy\n  proxy:\n    url: {hy2_url}\n    rewriteHost: true\n\nignoreClientBandwidth: {brutal_mode}\n\n{obfs_mode}\n")
                         os.system("clear")
-                        print("您的二维码为：")
+                        hy2_share_neko = f"hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}/?{jump_ports_neko}sni={hy2_domain}{obfs_scheme}#{hy2_username}"
+                        hy2_share_v2ray = f"hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?security=tls{obfs_scheme}&insecure=1{jump_ports_v2ray}&sni={hy2_domain}#{hy2_username}"
+                        os.system("clear")
+                        print("您的 nekoray|nekobox 二维码为：\n")
                         time.sleep(1)
-                        os.system(f'echo "hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?sni={hy2_domain}{obfs_scheme}#{hy2_username}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
+                        os.system(f'echo "{hy2_share_neko}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
                         time.sleep(1)
-                        print(f"\033[91m您的hy2配置为：\nhysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?sni={hy2_domain}{obfs_scheme}#{hy2_username}\033[m")
-                        os.system(f'echo "hysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?sni={hy2_domain}{obfs_scheme}#{hy2_username}" | qrencode -o /root/hy2config/hy2.png')
+                        print(f"\033[91m您的 nekoray|nekobox hy2配置链接为：\n{hy2_share_neko}\033[m")
+                        os.system(f'echo "{hy2_share_neko}" | qrencode -o /etc/hy2config/hy2-neko.png')
                         time.sleep(1)
-                        print("二维码已保存到/root/hy2config目录")
-                        hy2_url_scheme.write_text(f"您的hy2配置为：\nhysteria2://{hy2_passwd}@{hy2_domain}:{hy2_port}?sni={hy2_domain}{obfs_scheme}#{hy2_username}")
-                        print("配置已写入/root/hy2config目录")
+                        print("二维码已保存到当前/etc/hy2config目录")
+                        print("您的 v2ray 二维码为：\n")
+                        time.sleep(3)
+                        os.system(f'echo "{hy2_share_v2ray}" | qrencode -s 1 -m 1 -t ANSI256 -o -')
+                        time.sleep(1)
+                        print(f"\033[91m您的 v2ray hy2配置链接为：\n{hy2_share_v2ray}\033[m")
+                        os.system(f'echo "{hy2_share_v2ray}" | qrencode -o /etc/hy2config/hy2-v2ray.png')
+                        hy2_url_scheme.write_text(f"您的 nekoray|nekobox hy2配置链接为：{hy2_share_neko}\n您的 v2ray hy2配置链接为：{hy2_share_v2ray}")
+                        print("hy2配置已写入/etc/hy2config目录")
                         os.system("systemctl enable --now hysteria-server.service")
                         os.system("systemctl restart hysteria-server.service")
                         print("hy2服务已启动")
