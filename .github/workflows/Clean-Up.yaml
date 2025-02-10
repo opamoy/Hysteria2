@@ -1,0 +1,34 @@
+name: Clean Up Latest 5 Workflow Runs
+
+on:
+  workflow_dispatch:  # 手动触发工作流
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up GitHub token
+      run: |
+        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+
+    - name: Get all workflow runs
+      id: get_runs
+      run: |
+        curl -H "Authorization: token $GITHUB_TOKEN" \
+        "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=5" \
+        -o runs.json
+
+    - name: Extract workflow run IDs
+      id: extract_ids
+      run: |
+        jq '.workflow_runs[].id' runs.json > run_ids.txt
+        cat run_ids.txt
+
+    - name: Delete the latest 5 workflow runs
+      run: |
+        while read run_id; do
+          echo "Deleting workflow run ID: $run_id"
+          curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id"
+        done < run_ids.txt
