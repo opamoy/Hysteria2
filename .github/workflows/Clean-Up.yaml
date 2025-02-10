@@ -1,4 +1,4 @@
-name: Clean Up Latest 5 Workflow Runs
+name: Clean Up All But Latest 5 Workflow Runs
 
 on:
   workflow_dispatch:  # 手动触发工作流
@@ -12,12 +12,12 @@ jobs:
       run: |
         echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
 
-    - name: Get the latest 5 workflow runs
+    - name: Get all workflow runs
       id: get_runs
       run: |
-        echo "Fetching the latest 5 workflow runs..."
+        echo "Fetching all workflow runs..."
         curl -H "Authorization: token $GITHUB_TOKEN" \
-        "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=5&page=1" \
+        "https://api.github.com/repos/${{ github.repository }}/actions/runs?per_page=100" \
         -o runs.json
         
     - name: Show fetched runs for debugging
@@ -25,19 +25,20 @@ jobs:
         echo "Fetched workflow runs:"
         cat runs.json
         
-    - name: Extract workflow run IDs
+    - name: Extract workflow run IDs (keeping the latest 5)
       id: extract_ids
       run: |
         echo "Extracting workflow run IDs..."
-        jq '.workflow_runs[].id' runs.json > run_ids.txt
-        echo "Extracted IDs:"
-        cat run_ids.txt
+        # Extract all run IDs, then skip the first 5
+        jq '.workflow_runs | map(.id) | .[5:]' runs.json > run_ids_to_delete.txt
+        echo "Workflow runs to be deleted:"
+        cat run_ids_to_delete.txt
 
-    - name: Delete the latest 5 workflow runs
+    - name: Delete workflow runs
       run: |
         echo "Deleting the following workflow runs:"
         while read run_id; do
           echo "Deleting workflow run ID: $run_id"
           curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
           "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id"
-        done < run_ids.txt
+        done < run_ids_to_delete.txt
