@@ -17,13 +17,13 @@ jobs:
     - name: Check git status
       run: git status
 
-    - name: Delete specific workflow file and stage removal
+    - name: Force remove the specific workflow file and stage removal
       run: |
-        git rm .github/workflows/your-workflow-file.yml || echo "File already removed"
-        echo "Deleted the workflow file and staged for commit."
+        git rm -f .github/workflows/your-workflow-file.yml || echo "File already removed"
+        echo "Force deleted the workflow file and staged for commit."
 
-    - name: Add deleted files to git
-      run: git add -u
+    - name: Add all deleted files to git
+      run: git add -A  # 使用 -A 确保所有删除的文件都被添加到暂存区
 
     - name: Commit and push changes
       env:
