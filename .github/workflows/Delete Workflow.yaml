@@ -11,9 +11,12 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v2
 
+    - name: List files in workflows directory
+      run: ls -al .github/workflows/
+
     - name: Delete specific workflow file
       run: |
-        rm -f .github/workflows/your-workflow-file.yml
+        git rm .github/workflows/your-workflow-file.yml || echo "File already removed"
         echo "Deleted the workflow file."
 
     - name: Commit and push changes
@@ -22,6 +25,5 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add .github/workflows/your-workflow-file.yml
         git commit -m "Deleted the workflow file"
         git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git main
