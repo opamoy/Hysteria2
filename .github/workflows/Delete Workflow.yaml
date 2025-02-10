@@ -14,10 +14,16 @@ jobs:
     - name: List files in workflows directory
       run: ls -al .github/workflows/
 
+    - name: Check git status
+      run: git status
+
     - name: Delete specific workflow file and stage removal
       run: |
         git rm .github/workflows/your-workflow-file.yml || echo "File already removed"
         echo "Deleted the workflow file and staged for commit."
+
+    - name: Add deleted files to git
+      run: git add -u
 
     - name: Commit and push changes
       env:
