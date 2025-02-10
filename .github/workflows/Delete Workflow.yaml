@@ -14,10 +14,10 @@ jobs:
     - name: List files in workflows directory
       run: ls -al .github/workflows/
 
-    - name: Delete specific workflow file
+    - name: Delete specific workflow file and stage removal
       run: |
         git rm .github/workflows/your-workflow-file.yml || echo "File already removed"
-        echo "Deleted the workflow file."
+        echo "Deleted the workflow file and staged for commit."
 
     - name: Commit and push changes
       env:
@@ -25,5 +25,5 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git commit -m "Deleted the workflow file"
+        git commit -m "Deleted the workflow file" || echo "No changes to commit"
         git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git main
