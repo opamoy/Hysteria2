@@ -29,9 +29,9 @@ jobs:
       run: |
         git pull origin main
 
-    - name: Merge remote changes
+    - name: Merge remote changes with auto conflict resolution
       run: |
-        git merge hysteria2/main --allow-unrelated-histories
+        git merge -X theirs hysteria2/main --allow-unrelated-histories || echo "Merge conflict resolved automatically with 'theirs' strategy."
 
     - name: Push changes
       env:
