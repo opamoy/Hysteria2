@@ -30,7 +30,7 @@ jobs:
       run: |
         echo "Extracting workflow run IDs..."
         # Extract all run IDs, then skip the first 5
-        jq '.workflow_runs | map(.id) | .[5:]' runs.json > run_ids_to_delete.txt
+        jq -r '.workflow_runs | map(.id) | .[5:] | .[]' runs.json > run_ids_to_delete.txt
         echo "Workflow runs to be deleted:"
         cat run_ids_to_delete.txt
 
