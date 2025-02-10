@@ -1,0 +1,27 @@
+name: Delete Workflow File
+
+on:
+  workflow_dispatch:  # 手动触发工作流
+
+jobs:
+  delete_workflow_file:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    - name: Delete specific workflow file
+      run: |
+        rm -f .github/workflows/your-workflow-file.yml
+        echo "Deleted the workflow file."
+
+    - name: Commit and push changes
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .github/workflows/your-workflow-file.yml
+        git commit -m "Deleted the workflow file"
+        git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git main
