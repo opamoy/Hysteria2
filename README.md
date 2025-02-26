@@ -19,13 +19,13 @@ hysteria2一键安装(轻量级超低占用)
 
 **在线订阅转换网站**(支持多种协议互转):[订阅转换](https://sub.willloving.xyz/)
 
-**🙃安装脚本(首先推荐debian的系统):**
-```
-curl -sSL https://raw.githubusercontent.com/seagullz4/hysteria2/main/install.sh | bash
-```
-**🙃py新脚本(需要安装python3,一个非常不错的脚本):**
+**🙃安装脚本(首先推荐ubuntu的系统):**
 ```
 wget -O hy2.py py.willloving.xyz && python3 hy2.py
+```
+**🙃备用脚本:**
+```
+wget -O install.sh https://raw.githubusercontent.com/seagullz4/hysteria2/main/install.sh && chmod +x install.sh && bash install.sh
 ```
 
 **新增快捷方式终端输入hy2一键执行脚本**
