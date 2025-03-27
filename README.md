@@ -19,11 +19,11 @@ hysteria2一键安装(轻量级超低占用)
 
 **在线订阅转换网站**(支持多种协议互转):[订阅转换](https://sub.crazyact.com/)
 
-**🙃安装脚本(shell版):**
+**🙃安装脚本(shell版)(基本不在维护):**
 ```
 wget -O install.sh https://raw.githubusercontent.com/seagullz4/hysteria2/main/install.sh && chmod +x install.sh && bash install.sh
 ```
-**🙃备用脚本(python版)(推荐):**
+**🙃安装脚本2(python版)(推荐):**
 ```
 #执行安装依赖(请执一次依赖安装在进行安装脚本):
 
@@ -48,33 +48,25 @@ wget -O hy2.py https://raw.githubusercontent.com/seagullz4/hysteria2/main/hyster
 本项目原hysteria2地址请点击[hysteria](https://github.com/apernet/hysteria)
 
 
-必须客户端支持hysteria2才行，否则就是你安装了也无法使用。
+安卓端推荐：
 
-iOS端推荐：
+[nekobox](https://github.com/MatsuriDayo/NekoBoxForAndroid/releases)
 
-[小火箭](https://apps.apple.com/us/app/shadowrocket/id932747118)
+[husi](https://github.com/xchacha20-poly1305/husi/releases)(非常不错+nice)
 
-安卓端强烈推荐:
+[Clash-Meta](https://github.com/MetaCubeX/ClashMetaForAndroid/releases)
 
-[nekobox](https://github.com/MatsuriDayo/NekoBoxForAndroid)
+[hiddify](https://github.com/hiddify/hiddify-next/releases)(国外大神制作) 
 
-[husi](https://github.com/xchacha20-poly1305/husi)(非常不错+nice)
-
-[Clash-Meta](https://github.com/MetaCubeX/ClashMetaForAndroid)
-
-[hiddify](https://github.com/hiddify/hiddify-next)(国外大神制作) 
-
-[v2ray](https://github.com/2dust/v2rayN)
+[v2rayNG](https://github.com/2dust/v2rayNG/releases)
 
 电脑端推荐:
 
-[v2ray](https://github.com/2dust/v2rayN)
+[v2ray](https://github.com/2dust/v2rayN/releases)(推荐)
 
-[nekoray](https://github.com/MatsuriDayo/nekoray)（我最喜欢的）
+[Clash-Verge](https://github.com/clash-verge-rev/clash-verge-rev/releases)
 
-[Clash-Verge](https://github.com/clash-verge-rev/clash-verge-rev)
-
-[hiddify](https://github.com/hiddify/hiddify-next)(国外大神制作) 
+[hiddify](https://github.com/hiddify/hiddify-next/releases)(国外大神制作) 
 
 ## 服务器推荐
 
