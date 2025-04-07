@@ -107,13 +107,12 @@ def hysteria2_config():     #hysteria2配置
     hy2_config = Path(r"/etc/hysteria/config.yaml")  # 配置文件路径
     hy2_url_scheme = Path(r"/etc/hy2config/hy2_url_scheme.txt")  # 配置文件路径
     while True:
-        choice_1 = input("1. hy2配置查看\n2. hy2配置一键修改\n3. 手动修改hy2配置\n4. 返回\n请输入选项：")
+        choice_1 = input("1. hy2配置查看\n2. hy2配置一键修改\n3. 手动修改hy2配置\n4. 性能优化(可选,推荐安装xanmod内核)\n5. 返回\n请输入选项：")
         if choice_1 == "1":
             while True:
                     try:
                         os.system("clear")
                         print("您的官方配置文件为：\n")
-                        time.sleep(2)
                         print(hy2_config.read_text())
                         print(hy2_url_scheme.read_text())
                         break
@@ -230,30 +229,30 @@ def hysteria2_config():     #hysteria2配置
                                     dns_name = input("dns名称:\n1.Cloudflare\n2.Duck DNS\n3.Gandi.net\n4.Godaddy\n5.Name.com\n6.Vultr\n请输入您的选项：")
                                     if dns_name == '1':
                                         dns_token = input("请输入Cloudflare的Global api_token:")
-                                        acme_dns = f"type: dns\ndns:\n  name: cloudflare\n  config:\n    cloudflare_api_token: {dns_token}"
+                                        acme_dns = f"type: dns\n  dns:\n    name: cloudflare\n    config:\n      cloudflare_api_token: {dns_token}"
                                         break
                                     elif dns_name == '2':
                                         dns_token = input("请输入Duck DNS的api_token:")
                                         override_domain = input("请输入Duck DNS的override_domain:")
-                                        acme_dns = f"type: dns\ndns:\n  name: duckdns\n  config:\n    duckdns_api_token: {dns_token}\n    duckdns_override_domain: {override_domain}"
+                                        acme_dns = f"type: dns\n  dns:\n    name: duckdns\n    config:\n      duckdns_api_token: {dns_token}\n    duckdns_override_domain: {override_domain}"
                                         break
                                     elif dns_name == '3':
                                         dns_token = input("请输入Gandi.net的api_token:")
-                                        acme_dns = f"type: dns\ndns:\n  name: gandi\n  config:\n    gandi_api_token: {dns_token}"
+                                        acme_dns = f"type: dns\n  dns:\n    name: gandi\n    config:\n      gandi_api_token: {dns_token}"
                                         break
                                     elif dns_name == '4':
                                         dns_token = input("请输入Godaddy的api_token:")
-                                        acme_dns = f"type: dns\ndns:\n  name: godaddy\n  config:\n    godaddy_api_token: {dns_token}"
+                                        acme_dns = f"type: dns\n  dns:\n    name: godaddy\n    config:\n      godaddy_api_token: {dns_token}"
                                         break
                                     elif dns_name == '5':
                                         dns_token = input("请输入Name.com的namedotcom_token:")
                                         dns_user = input("请输入Name.com的namedotcom_user:")
                                         namedotcom_server = input("请输入Name.com的namedotcom_server:")
-                                        acme_dns = f"type: dns\ndns:\n  name: {dns_name}\n  config:\n    namedotcom_token: {dns_token}\n    namedotcom_user: {dns_user}\n    namedotcom_server: {namedotcom_server}"
+                                        acme_dns = f"type: dns\n  dns:\n    name: {dns_name}\n    config:\n      namedotcom_token: {dns_token}\n      namedotcom_user: {dns_user}\n      namedotcom_server: {namedotcom_server}"
                                         break
                                     elif dns_name == '6':
                                         dns_token = input("请输入Vultr的API Key:")
-                                        acme_dns = f"type: dns\ndns:\n  name: {dns_name}\n  config:\n    vultr_api_key: {dns_token}"
+                                        acme_dns = f"type: dns\n  dns:\n    name: {dns_name}\n    config:\n      vultr_api_key: {dns_token}"
                                         break
                                     else:
                                         print("输入错误，请重新输入")
@@ -404,6 +403,8 @@ def hysteria2_config():     #hysteria2配置
             os.system("systemctl restart hysteria-server.service")
             print("hy2服务已启动")
         elif choice_1 == "4":
+            os.system("wget -O tcpx.sh 'https://github.com/ylx2016/Linux-NetSpeed/raw/master/tcpx.sh' && chmod +x tcpx.sh && ./tcpx.sh")
+        elif choice_1 == "5":
             break
         else:
             print("\033[91m请重新输入\033[m")
